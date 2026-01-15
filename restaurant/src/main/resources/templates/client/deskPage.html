@@ -517,6 +517,9 @@
 </body>
 <script th:src="@{/layuiadmin/layui/layui.js}" src="../../static/layuiadmin/layui/layui.js"></script>
 <script th:inline="javascript">
+    // 全局变量
+    var currentBusyDesk = null;
+    
     layui.use(['jquery', 'layer', 'laypage'], function(){
         var $ = jQuery = layui.$,
             layer = layui.layer,
@@ -525,7 +528,6 @@
         var totalNum = [[${page.total}]];
         var limit = 15;
         var currentPage = [[${page.pageNum}]];
-        var currentBusyDesk = null; // 当前点击的就餐中桌位
         
         // 桌位点击事件 - 空闲和整理中都可以选择
         $('.desk-card.idle, .desk-card.cleaning').on('click', function(){
@@ -591,36 +593,36 @@
                 }
             }
         });
-    });
-    
-    // 关闭现代化弹窗
-    function closeBusyModal() {
-        $('#busyDeskModal').removeClass('show');
-        currentBusyDesk = null;
-    }
-    
-    // 确认进入就餐中桌位
-    function confirmBusyDesk() {
-        if (!currentBusyDesk) return;
         
-        // 直接设置 session 并跳转，不调用 login.do
-        $.ajax({
-            url: '/restaurant/guest/setDesk.do',
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                "deskCode": currentBusyDesk.deskCode
-            },
-            success: function(res) {
-                closeBusyModal();
-                location.href = "/restaurant/guest/h5-main.html";
-            },
-            error: function() {
-                // 即使失败也直接跳转，因为我们要允许进入
-                closeBusyModal();
-                location.href = "/restaurant/guest/h5-main.html";
-            }
-        });
-    }
+        // 关闭现代化弹窗
+        window.closeBusyModal = function() {
+            $('#busyDeskModal').removeClass('show');
+            currentBusyDesk = null;
+        };
+        
+        // 确认进入就餐中桌位
+        window.confirmBusyDesk = function() {
+            if (!currentBusyDesk) return;
+            
+            // 直接设置 session 并跳转，不调用 login.do
+            $.ajax({
+                url: '/restaurant/guest/setDesk.do',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    "deskCode": currentBusyDesk.deskCode
+                },
+                success: function(res) {
+                    window.closeBusyModal();
+                    location.href = "/restaurant/guest/h5-main.html";
+                },
+                error: function() {
+                    // 即使失败也直接跳转，因为我们要允许进入
+                    window.closeBusyModal();
+                    location.href = "/restaurant/guest/h5-main.html";
+                }
+            });
+        };
+    });
 </script>
 </html>
