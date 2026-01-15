@@ -56,6 +56,21 @@ public class ClientDeskController{
         return "/client/main";
     }
 
+    /**
+     * H5移动端点餐页面
+     * @param model
+     * @return
+     */
+    @GetMapping("/h5-main.html")
+    private String h5Main(Model model, HttpSession session){
+        // 如果session中没有桌号，设置一个默认的用于测试
+        if(session.getAttribute("deskCode") == null) {
+            session.setAttribute("deskCode", "001");
+        }
+        model.addAttribute("categoryList",goodsCategoryService.findAll());
+        return "/client/h5-main";
+    }
+
     @GetMapping("/goodspage.thml")
     private String goodsPage(){
         return "/client/goodsPage";

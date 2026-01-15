@@ -49,6 +49,18 @@ public class ClientOrderController{
         return "/client/myOrder";
     }
 
+    /**
+     * H5移动端已点菜页面
+     * @param orderCode
+     * @param model
+     * @return
+     */
+    @GetMapping("/h5-myOrder.html")
+    public String h5ViewOrderDetail(@RequestParam("orderCode") String orderCode, Model model){
+        model.addAttribute("orderCode",orderCode);
+        return "/client/h5-myOrder";
+    }
+
     @PostMapping("/delGood.do")
     @ResponseBody
     public Result<OrderDetail> deleteByOrderDetailIds(@RequestParam("ids") String ids){

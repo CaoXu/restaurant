@@ -1,0 +1,484 @@
+菜<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>已点菜品</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #f0f5ff;
+            color: #333;
+        }
+
+        /* 头部 */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: linear-gradient(135deg, #1890ff 0%, #36cfc9 100%);
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            z-index: 1000;
+            box-shadow: 0 2px 12px rgba(24, 144, 255, 0.2);
+        }
+
+        .back-btn {
+            font-size: 24px;
+            color: white;
+            cursor: pointer;
+            margin-right: 15px;
+        }
+
+        .header-title {
+            flex: 1;
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+        }
+
+        /* 订单信息 */
+        .order-info {
+            margin-top: 50px;
+            background: #fff;
+            padding: 15px;
+            border-bottom: 8px solid #f8f8f8;
+        }
+
+        .order-info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+
+        .order-info-label {
+            color: #999;
+        }
+
+        .order-info-value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* 菜品列表 */
+        .goods-list {
+            padding: 0 0 80px 0;
+        }
+
+        .goods-item {
+            background: #fff;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .goods-image {
+            width: 90px;
+            height: 90px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+            background: #f5f5f5;
+        }
+
+        .goods-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .goods-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .goods-category {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .goods-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .goods-price {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .goods-count {
+            font-size: 14px;
+            color: #666;
+            margin-left: 10px;
+        }
+
+        .goods-status {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-waiting {
+            background: #e6f7ff;
+            color: #1890ff;
+        }
+
+        .status-cooking {
+            background: #fff7e6;
+            color: #fa8c16;
+        }
+
+        .status-ready {
+            background: #fff1f0;
+            color: #f5222d;
+        }
+
+        .status-served {
+            background: #f6ffed;
+            color: #52c41a;
+        }
+
+        .refund-btn {
+            padding: 5px 15px;
+            background: #fff;
+            border: 1px solid #d9d9d9;
+            border-radius: 15px;
+            font-size: 13px;
+            color: #1890ff;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .refund-btn:active {
+            background: #f0f5ff;
+            border-color: #1890ff;
+        }
+
+        .refund-btn.disabled {
+            color: #bbb;
+            border-color: #e8e8e8;
+            cursor: not-allowed;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .empty-icon {
+            font-size: 60px;
+            color: #d9d9d9;
+            margin-bottom: 15px;
+        }
+
+        .empty-text {
+            font-size: 15px;
+            color: #999;
+        }
+
+        /* 加载中 */
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: #999;
+            font-size: 14px;
+        }
+
+        /* 底部汇总 */
+        .summary-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            padding: 15px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .summary-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .summary-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .summary-value {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .summary-total {
+            font-size: 20px;
+            font-weight: 600;
+            color: #ff4d4f;
+        }
+    </style>
+</head>
+<body>
+<!-- 头部 -->
+<div class="header">
+    <div class="back-btn" onclick="goBack()">←</div>
+    <div class="header-title">已点菜品</div>
+</div>
+
+<!-- 订单信息 -->
+<div class="order-info" id="orderInfo" style="display:none;">
+    <div class="order-info-item">
+        <span class="order-info-label">订单编号</span>
+        <span class="order-info-value" id="orderCodeText"></span>
+    </div>
+    <div class="order-info-item">
+        <span class="order-info-label">就餐人数</span>
+        <span class="order-info-value"><span id="peopleNum"></span>人</span>
+    </div>
+    <div class="order-info-item">
+        <span class="order-info-label">下单时间</span>
+        <span class="order-info-value" id="orderTime"></span>
+    </div>
+</div>
+
+<!-- 菜品列表 -->
+<div class="goods-list" id="goodsList"></div>
+
+<!-- 加载中 -->
+<div class="loading" id="loading">加载中...</div>
+
+<!-- 空状态 -->
+<div class="empty-state" id="emptyState" style="display:none;">
+    <div class="empty-icon">📝</div>
+    <div class="empty-text">还没有点菜哦</div>
+</div>
+
+<!-- 底部汇总 -->
+<div class="summary-bar" id="summaryBar" style="display:none;">
+    <div class="summary-row">
+        <span class="summary-label">菜品数量</span>
+        <span class="summary-value"><span id="totalCount">0</span> 份</span>
+    </div>
+    <div class="summary-row">
+        <span class="summary-label">合计金额</span>
+        <span class="summary-total">¥<span id="totalPrice">0.00</span></span>
+    </div>
+</div>
+
+<script>
+    let orderCode = '';
+    let orderDetails = [];
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', function() {
+        // 从URL获取订单号
+        const urlParams = new URLSearchParams(window.location.search);
+        orderCode = urlParams.get('orderCode');
+
+        if (!orderCode) {
+            showEmpty();
+            return;
+        }
+
+        loadOrderDetails();
+    });
+
+    // 加载订单详情
+    function loadOrderDetails() {
+        fetch(`/restaurant/guest/client/myOrder.do?orderCode=${orderCode}&pageNum=1&pageSize=100`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('loading').style.display = 'none';
+
+            if (data.code === 200 && data.data && data.data.length > 0) {
+                orderDetails = data.data;
+                renderOrderDetails();
+                showSummary();
+            } else {
+                showEmpty();
+            }
+        })
+        .catch(error => {
+            document.getElementById('loading').style.display = 'none';
+            console.error('Error:', error);
+            alert('加载失败，请重试');
+        });
+    }
+
+    // 渲染订单详情
+    function renderOrderDetails() {
+        const container = document.getElementById('goodsList');
+        container.innerHTML = '';
+
+        // 显示订单信息
+        if (orderDetails.length > 0) {
+            const firstOrder = orderDetails[0].order;
+            document.getElementById('orderCodeText').textContent = firstOrder.orderCode || orderCode;
+            document.getElementById('peopleNum').textContent = firstOrder.peopleNum || '-';
+            document.getElementById('orderTime').textContent = formatTime(firstOrder.orderTime);
+            document.getElementById('orderInfo').style.display = 'block';
+        }
+
+        orderDetails.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'goods-item';
+
+            const statusInfo = getStatusInfo(item.status, item.order.payStatus);
+            const canRefund = item.status === 0 && item.order.payStatus !== 1;
+
+            div.innerHTML = `
+                <img src="/restaurant${item.goods.imgUrl || '/static/image/default.jpg'}"
+                     alt="${item.goods.goodsName}"
+                     class="goods-image"
+                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23f5f5f5%22 width=%22100%22 height=%22100%22/%3E%3Ctext fill=%22%23ccc%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2214%22%3E暂无图片%3C/text%3E%3C/svg%3E'">
+                <div class="goods-info">
+                    <div>
+                        <div class="goods-name">${item.goods.goodsName}</div>
+                        <div class="goods-category">${item.goods.goodsCategory?.categoryName || '美味佳肴'}</div>
+                    </div>
+                    <div class="goods-bottom">
+                        <div>
+                            <span class="goods-price">¥${item.goods.price}</span>
+                            <span class="goods-count">x${item.count}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="goods-status">
+                    <div class="status-badge ${statusInfo.class}">${statusInfo.text}</div>
+                    <button class="refund-btn ${canRefund ? '' : 'disabled'}"
+                            onclick="refundGood(${item.odId}, ${canRefund})"
+                            ${canRefund ? '' : 'disabled'}>
+                        退菜
+                    </button>
+                </div>
+            `;
+
+            container.appendChild(div);
+        });
+    }
+
+    // 获取状态信息
+    function getStatusInfo(status, payStatus) {
+        if (payStatus === 1) {
+            return { class: 'status-served', text: '已完成' };
+        }
+
+        switch(status) {
+            case 0:
+                return { class: 'status-waiting', text: '等待烹饪' };
+            case 1:
+                return { class: 'status-cooking', text: '正在烹饪' };
+            case 2:
+                return { class: 'status-ready', text: '等待上菜' };
+            case 3:
+                return { class: 'status-served', text: '上菜完成' };
+            default:
+                return { class: 'status-waiting', text: '处理中' };
+        }
+    }
+
+    // 格式化时间
+    function formatTime(timeStr) {
+        if (!timeStr) return '-';
+        const date = new Date(timeStr);
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        return `${month}-${day} ${hours}:${minutes}`;
+    }
+
+    // 显示汇总
+    function showSummary() {
+        let totalCount = 0;
+        let totalPrice = 0;
+
+        orderDetails.forEach(item => {
+            totalCount += item.count;
+            totalPrice += item.goods.price * item.count;
+        });
+
+        document.getElementById('totalCount').textContent = totalCount;
+        document.getElementById('totalPrice').textContent = totalPrice.toFixed(2);
+        document.getElementById('summaryBar').style.display = 'block';
+    }
+
+    // 显示空状态
+    function showEmpty() {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('emptyState').style.display = 'block';
+    }
+
+    // 退菜
+    function refundGood(odId, canRefund) {
+        if (!canRefund) {
+            return;
+        }
+
+        if (!confirm('确定要退这道菜吗？')) {
+            return;
+        }
+
+        fetch('/restaurant/guest/client/delGood.do', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `ids=${odId}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.code === 200) {
+                alert('退菜成功');
+                // 重新加载
+                loadOrderDetails();
+            } else {
+                alert(data.msg || '退菜失败');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('退菜失败，请重试');
+        });
+    }
+
+    // 返回
+    function goBack() {
+        window.history.back();
+    }
+</script>
+</body>
+</html>
