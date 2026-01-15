@@ -13,94 +13,154 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: #f0f5ff;
+            background: #f7f8fa;
             color: #333;
         }
 
-        /* 头部 */
+        /* 顶部搜索栏 */
         .header {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            height: 50px;
-            background: linear-gradient(135deg, #1890ff 0%, #36cfc9 100%);
-            color: white;
+            height: 56px;
+            background: #fff;
             display: flex;
             align-items: center;
-            justify-content: space-between;
             padding: 0 15px;
             z-index: 1000;
-            box-shadow: 0 2px 12px rgba(24, 144, 255, 0.2);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
-        .header-left {
-            font-size: 15px;
-            font-weight: 600;
-            color: white;
-        }
-
-        .header-right {
+        .header-info {
             display: flex;
-            gap: 15px;
+            align-items: center;
+            gap: 8px;
+            margin-right: 12px;
+        }
+
+        .desk-badge {
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .people-badge {
+            background: #f0f0f0;
+            color: #666;
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .search-box {
+            flex: 1;
+            height: 36px;
+            background: #f5f5f5;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            gap: 8px;
+        }
+
+        .search-icon {
+            font-size: 16px;
+            color: #999;
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            color: #333;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: #bbb;
         }
 
         .header-btn {
-            padding: 6px 16px;
-            background: rgba(255, 255, 255, 0.25);
+            padding: 6px 12px;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
             color: white;
-            border-radius: 20px;
+            border-radius: 18px;
             font-size: 13px;
             cursor: pointer;
-            transition: all 0.2s;
-            backdrop-filter: blur(10px);
-        }
-
-        .header-btn:active {
-            background: rgba(255, 255, 255, 0.35);
-            transform: scale(0.95);
+            white-space: nowrap;
+            margin-left: 8px;
         }
 
         /* 分类导航 */
         .category-nav {
             position: fixed;
-            top: 50px;
+            top: 56px;
             left: 0;
-            width: 75px;
-            bottom: 0;
+            right: 0;
+            height: 52px;
             background: #fff;
-            overflow-y: auto;
-            box-shadow: 2px 0 8px rgba(24, 144, 255, 0.08);
-            z-index: 100;
+            overflow-x: auto;
+            overflow-y: hidden;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            padding: 0 5px;
+        }
+
+        .category-nav::-webkit-scrollbar {
+            display: none;
         }
 
         .category-item {
-            padding: 18px 5px;
-            text-align: center;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
             font-size: 13px;
             cursor: pointer;
-            border-bottom: 1px solid #f0f5ff;
-            word-break: break-all;
             color: #666;
-            transition: all 0.3s;
+            transition: all 0.2s;
+            position: relative;
+            min-width: 60px;
         }
 
         .category-item.active {
-            background: linear-gradient(135deg, #1890ff 0%, #36cfc9 100%);
-            color: white;
+            color: #ff6b35;
             font-weight: 600;
+        }
+
+        .category-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 3px;
+            background: linear-gradient(90deg, #ff6b35, #ff8c42);
+            border-radius: 2px;
         }
 
         /* 商品列表区域 */
         .goods-container {
             position: fixed;
-            top: 50px;
-            left: 75px;
+            top: 108px;
+            left: 0;
             right: 0;
             bottom: 60px;
             overflow-y: auto;
             padding: 10px;
-            background: #f0f5ff;
+            background: #f7f8fa;
         }
 
         .goods-list {
@@ -116,10 +176,12 @@
             display: flex;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
             transition: all 0.2s;
+            border: 1.5px solid transparent;
         }
 
         .goods-item:active {
             transform: scale(0.98);
+            border-color: #ff6b35;
         }
 
         .goods-image {
@@ -170,10 +232,21 @@
             margin-left: 8px;
         }
 
+        .goods-action {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sold-out-text {
+            font-size: 12px;
+            color: #999;
+        }
+
         .add-btn {
             width: 32px;
             height: 32px;
-            background: linear-gradient(135deg, #1890ff 0%, #36cfc9 100%);
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
             color: white;
             border: none;
             border-radius: 50%;
@@ -182,7 +255,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 3px 10px rgba(24, 144, 255, 0.3);
+            box-shadow: 0 3px 10px rgba(255, 107, 53, 0.3);
             transition: all 0.2s;
         }
 
@@ -191,14 +264,14 @@
         }
 
         .add-btn.added {
-            background: #fff;
-            color: #1890ff;
-            border: 2px solid #1890ff;
-            box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15);
+            background: #ff4d4f;
+            color: white;
+            border: none;
+            box-shadow: 0 2px 8px rgba(255, 77, 79, 0.25);
         }
 
         .sold-out {
-            background: #d9d9d9 !important;
+            background: #e8e8e8 !important;
             color: #bbb !important;
             cursor: not-allowed !important;
             box-shadow: none !important;
@@ -215,22 +288,22 @@
             display: flex;
             align-items: center;
             padding: 0 15px;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
             z-index: 1000;
         }
 
         .cart-icon-wrapper {
             position: relative;
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, #1890ff 0%, #36cfc9 100%);
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-right: 12px;
-            font-size: 20px;
-            box-shadow: 0 3px 12px rgba(24, 144, 255, 0.3);
+            font-size: 24px;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.35);
         }
 
         .cart-badge {
@@ -265,7 +338,7 @@
         .submit-btn {
             width: 120px;
             height: 44px;
-            background: linear-gradient(135deg, #1890ff 0%, #36cfc9 100%);
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
             color: white;
             border: none;
             border-radius: 22px;
@@ -273,7 +346,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 3px 12px rgba(24, 144, 255, 0.3);
+            box-shadow: 0 3px 12px rgba(255, 107, 53, 0.3);
         }
 
         .submit-btn:active {
@@ -352,7 +425,7 @@
         }
 
         .clear-cart {
-            color: #1890ff;
+            color: #ff6b35;
             font-size: 14px;
             cursor: pointer;
         }
@@ -398,7 +471,7 @@
             height: 28px;
             border: none;
             border-radius: 50%;
-            background: linear-gradient(135deg, #1890ff 0%, #36cfc9 100%);
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
             color: white;
             display: flex;
             align-items: center;
@@ -406,7 +479,7 @@
             font-size: 18px;
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(24, 144, 255, 0.25);
+            box-shadow: 0 2px 8px rgba(255, 107, 53, 0.25);
         }
 
         .control-btn:active {
@@ -414,10 +487,8 @@
         }
 
         .control-btn.minus {
-            background: #fff;
-            color: #1890ff;
-            border: 2px solid #1890ff;
-            box-shadow: 0 2px 6px rgba(24, 144, 255, 0.15);
+            background: #ff4d4f;
+            box-shadow: 0 2px 6px rgba(255, 77, 79, 0.25);
         }
 
         .cart-item-count {
@@ -489,6 +560,214 @@
             text-align: center;
             padding: 40px 0;
             color: #999;
+        }
+
+        /* 菜品详情弹窗 */
+        .goods-detail-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 2500;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .goods-detail-modal.show {
+            display: flex;
+        }
+
+        .goods-detail-content {
+            background: #fff;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: scaleIn 0.3s ease-out;
+        }
+
+        .goods-detail-image {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            border-radius: 16px 16px 0 0;
+            background: #f5f5f5;
+        }
+
+        .goods-detail-body {
+            padding: 20px;
+        }
+
+        .goods-detail-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .goods-detail-desc {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .goods-detail-price {
+            font-size: 24px;
+            font-weight: 600;
+            color: #ff4d4f;
+            margin-bottom: 20px;
+        }
+
+        .goods-option-section {
+            margin-bottom: 20px;
+        }
+
+        .option-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .option-required {
+            color: #ff4d4f;
+            font-size: 13px;
+            margin-left: 5px;
+        }
+
+        .option-list {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .option-item {
+            padding: 8px 16px;
+            border: 1.5px solid #e8e8e8;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #fff;
+        }
+
+        .option-item:active {
+            transform: scale(0.95);
+        }
+
+        .option-item.selected {
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+            border-color: #ff6b35;
+            color: white;
+            font-weight: 500;
+        }
+
+        .goods-detail-quantity {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .quantity-label {
+            font-size: 15px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .quantity-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(255, 107, 53, 0.25);
+        }
+
+        .quantity-btn:active {
+            transform: scale(0.9);
+        }
+
+        .quantity-btn.minus {
+            background: #ff4d4f;
+            box-shadow: 0 2px 6px rgba(255, 77, 79, 0.25);
+        }
+
+        .quantity-btn:disabled {
+            background: #f5f5f5;
+            color: #bbb;
+            border-color: #e8e8e8;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .quantity-number {
+            min-width: 35px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .goods-detail-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            gap: 10px;
+        }
+
+        .detail-cancel-btn {
+            flex: 1;
+            height: 44px;
+            background: #fff;
+            color: #666;
+            border: 1px solid #d9d9d9;
+            border-radius: 22px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .detail-cancel-btn:active {
+            background: #f5f5f5;
+        }
+
+        .detail-add-btn {
+            flex: 2;
+            height: 44px;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+            color: white;
+            border: none;
+            border-radius: 22px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 3px 12px rgba(255, 107, 53, 0.3);
+        }
+
+        .detail-add-btn:active {
+            transform: scale(0.98);
         }
 
         /* 选择人数弹窗 */
@@ -564,17 +843,17 @@
         }
 
         .people-number.selected {
-            background: linear-gradient(135deg, #1890ff 0%, #36cfc9 100%);
-            border-color: #1890ff;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+            border-color: #ff6b35;
             color: white;
             font-weight: 600;
-            box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
         }
 
         .people-confirm-btn {
             width: 100%;
             height: 45px;
-            background: linear-gradient(135deg, #1890ff 0%, #36cfc9 100%);
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
             color: white;
             border: none;
             border-radius: 22px;
@@ -582,7 +861,7 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-            box-shadow: 0 3px 12px rgba(24, 144, 255, 0.3);
+            box-shadow: 0 3px 12px rgba(255, 107, 53, 0.3);
         }
 
         .people-confirm-btn:active {
@@ -684,10 +963,15 @@
     let currentPage = 1;
     let loading = false;
     let hasMore = true;
-    let cart = {}; // {goodsId: {goods: {...}, count: number}}
+    let cart = {}; // {goodsId: {goods: {...}, count: number, spicy: string}}
     let orderCode = '';
     let selectedPeopleCount = 0; // 选择的就餐人数
     const pageSize = 10;
+    
+    // 菜品详情相关
+    let currentDetailGoods = null;
+    let selectedSpicy = '';
+    let detailQuantity = 1;
 
     // 初始化
     document.addEventListener('DOMContentLoaded', function() {
@@ -824,6 +1108,14 @@
             
             const div = document.createElement('div');
             div.className = 'goods-item';
+            div.onclick = function(e) {
+                // 如果点击的是按钮，不触发详情
+                if (e.target.tagName === 'BUTTON') {
+                    return;
+                }
+                showGoodsDetail(goods);
+            };
+            
             div.innerHTML = `
                 <img src="/restaurant${goods.imgUrl}" alt="${goods.goodsName}" class="goods-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23ddd%22 width=%22100%22 height=%22100%22/%3E%3Ctext fill=%22%23999%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3E暂无图片%3C/text%3E%3C/svg%3E'">
                 <div class="goods-info">
@@ -834,12 +1126,15 @@
                             <span class="goods-price">¥${goods.price}</span>
                             <span class="goods-stock">库存${goods.storeCount}份</span>
                         </div>
-                        <button class="add-btn ${isSoldOut ? 'sold-out' : ''} ${isInCart ? 'added' : ''}" 
-                                id="btn-${goods.goodsId}"
-                                onclick="toggleCart(${goods.goodsId}, '${goods.goodsName}', ${goods.price}, '${goods.imgUrl}', ${goods.storeCount})"
-                                ${isSoldOut ? 'disabled' : ''}>
-                            ${isSoldOut ? '×' : (isInCart ? '-' : '+')}
-                        </button>
+                        <div class="goods-action">
+                            ${isSoldOut ? '<span class="sold-out-text">售罄</span>' : ''}
+                            <button class="add-btn ${isSoldOut ? 'sold-out' : ''} ${isInCart ? 'added' : ''}" 
+                                    id="btn-${goods.goodsId}"
+                                    onclick="toggleCart(${goods.goodsId}, '${goods.goodsName}', ${goods.price}, '${goods.imgUrl}', ${goods.storeCount}, event)"
+                                    ${isSoldOut ? 'disabled' : ''}>
+                                ${isInCart ? '-' : '+'}
+                            </button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -848,24 +1143,107 @@
     }
 
     // 切换购物车（添加或删除）
-    function toggleCart(goodsId, goodsName, price, imgUrl, storeCount) {
+    function toggleCart(goodsId, goodsName, price, imgUrl, storeCount, event) {
+        if (event) {
+            event.stopPropagation();
+        }
+        
         if (cart[goodsId]) {
             // 已在购物车，删除
             delete cart[goodsId];
             updateButtonStyle(goodsId, false);
         } else {
-            // 不在购物车，添加
-            cart[goodsId] = {
-                goods: {goodsId, goodsName, price, imgUrl, storeCount},
-                count: 1
-            };
-            updateButtonStyle(goodsId, true);
+            // 不在购物车，显示详情弹窗
+            const goods = { goodsId, goodsName, price, imgUrl, storeCount };
+            showGoodsDetail(goods);
+            return;
         }
         updateCart();
     }
 
-    // 更新按钮样式
-    function updateButtonStyle(goodsId, isAdded) {
+    // 显示菜品详情
+    function showGoodsDetail(goods) {
+        currentDetailGoods = goods;
+        selectedSpicy = ''; // 重置辣度选择
+        detailQuantity = 1; // 重置数量
+        
+        // 设置内容
+        document.getElementById('detailImage').src = '/restaurant' + goods.imgUrl;
+        document.getElementById('detailName').textContent = goods.goodsName;
+        document.getElementById('detailPrice').textContent = goods.price;
+        document.getElementById('detailQuantity').textContent = detailQuantity;
+        
+        // 重置辣度选择
+        document.querySelectorAll('#spicyOptions .option-item').forEach(item => {
+            item.classList.remove('selected');
+        });
+        
+        // 显示弹窗
+        document.getElementById('goodsDetailModal').classList.add('show');
+    }
+
+    // 隐藏菜品详情
+    function hideGoodsDetail(event) {
+        if (event) {
+            // 点击背景关闭
+            document.getElementById('goodsDetailModal').classList.remove('show');
+        } else {
+            // 点击取消按钮关闭
+            document.getElementById('goodsDetailModal').classList.remove('show');
+        }
+    }
+
+    // 选择辣度
+    function selectSpicy(element) {
+        document.querySelectorAll('#spicyOptions .option-item').forEach(item => {
+            item.classList.remove('selected');
+        });
+        element.classList.add('selected');
+        selectedSpicy = element.getAttribute('data-value');
+    }
+
+    // 修改详情页数量
+    function changeDetailQuantity(delta) {
+        detailQuantity += delta;
+        if (detailQuantity < 1) detailQuantity = 1;
+        if (detailQuantity > currentDetailGoods.storeCount) {
+            detailQuantity = currentDetailGoods.storeCount;
+            alert('库存不足');
+        }
+        document.getElementById('detailQuantity').textContent = detailQuantity;
+    }
+
+    // 从详情页加入购物车
+    function addDetailToCart() {
+        if (!selectedSpicy) {
+            alert('请选择辣度');
+            return;
+        }
+        
+        if (!currentDetailGoods) return;
+        
+        const goodsId = currentDetailGoods.goodsId;
+        
+        if (cart[goodsId]) {
+            // 已存在，增加数量
+            cart[goodsId].count += detailQuantity;
+            if (cart[goodsId].count > currentDetailGoods.storeCount) {
+                cart[goodsId].count = currentDetailGoods.storeCount;
+                alert('库存不足');
+            }
+        } else {
+            // 新增
+            cart[goodsId] = {
+                goods: currentDetailGoods,
+                count: detailQuantity,
+                spicy: selectedSpicy
+            };
+            updateButtonStyle(goodsId, true);
+        }
+        
+        updateCart();
+        hideGoodsDetail();
+    }
         const btn = document.getElementById('btn-' + goodsId);
         if (btn) {
             if (isAdded) {
