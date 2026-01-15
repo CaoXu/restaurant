@@ -103,59 +103,36 @@
             position: fixed;
             top: 56px;
             left: 0;
-            right: 0;
-            height: 52px;
+            width: 75px;
+            bottom: 0;
             background: #fff;
-            overflow-x: auto;
-            overflow-y: hidden;
-            white-space: nowrap;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-            z-index: 999;
-            display: flex;
-            align-items: center;
-            padding: 0 5px;
-        }
-
-        .category-nav::-webkit-scrollbar {
-            display: none;
+            overflow-y: auto;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.04);
+            z-index: 100;
         }
 
         .category-item {
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 8px 12px;
+            padding: 18px 5px;
+            text-align: center;
             font-size: 13px;
             cursor: pointer;
+            border-bottom: 1px solid #f5f5f5;
+            word-break: break-all;
             color: #666;
-            transition: all 0.2s;
-            position: relative;
-            min-width: 60px;
+            transition: all 0.3s;
         }
 
         .category-item.active {
-            color: #ff6b35;
+            background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
+            color: white;
             font-weight: 600;
-        }
-
-        .category-item.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 20px;
-            height: 3px;
-            background: linear-gradient(90deg, #ff6b35, #ff8c42);
-            border-radius: 2px;
         }
 
         /* 商品列表区域 */
         .goods-container {
             position: fixed;
-            top: 108px;
-            left: 0;
+            top: 56px;
+            left: 75px;
             right: 0;
             bottom: 60px;
             overflow-y: auto;
@@ -753,17 +730,18 @@
         }
 
         .detail-add-btn {
-            flex: 2;
-            height: 44px;
+            width: 100%;
+            height: 48px;
             background: linear-gradient(135deg, #ff6b35 0%, #ff8c42 100%);
             color: white;
             border: none;
-            border-radius: 22px;
-            font-size: 15px;
+            border-radius: 24px;
+            font-size: 17px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
             box-shadow: 0 3px 12px rgba(255, 107, 53, 0.3);
+            margin: 0 auto;
         }
 
         .detail-add-btn:active {
@@ -957,6 +935,43 @@
     </div>
 </div>
 
+<!-- 菜品详情弹窗 -->
+<div class="cart-modal" id="goodsDetailModal" onclick="hideGoodsDetail(event)">
+    <div class="cart-content" onclick="event.stopPropagation()" style="max-height: 80vh; overflow-y: auto;">
+        <div class="cart-header">
+            <div class="cart-title">菜品详情</div>
+            <div class="clear-cart" onclick="hideGoodsDetail()">关闭</div>
+        </div>
+        <div style="padding: 20px;">
+            <img id="detailImage" src="" alt="菜品图片" style="width: 100%; border-radius: 12px; margin-bottom: 15px;">
+            <div style="font-size: 18px; font-weight: 600; margin-bottom: 8px;" id="detailName">菜品名称</div>
+            <div style="font-size: 20px; color: #ff4d4f; font-weight: bold; margin-bottom: 20px;">
+                ￥<span id="detailPrice">0.00</span>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <div style="font-size: 14px; color: #666; margin-bottom: 10px;">选择辣度</div>
+                <div id="spicyOptions" style="display: flex; gap: 10px;">
+                    <div class="option-item" data-value="微辣" onclick="selectSpicy(this)">微辣</div>
+                    <div class="option-item" data-value="中辣" onclick="selectSpicy(this)">中辣</div>
+                    <div class="option-item" data-value="加辣" onclick="selectSpicy(this)">加辣</div>
+                </div>
+            </div>
+            
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                <div style="font-size: 14px; color: #666;">数量</div>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button class="quantity-btn minus" onclick="changeDetailQuantity(-1)">-</button>
+                    <span id="detailQuantity" style="font-size: 16px; font-weight: 600; min-width: 30px; text-align: center;">1</span>
+                    <button class="quantity-btn" onclick="changeDetailQuantity(1)">+</button>
+                </div>
+            </div>
+            
+            <button class="detail-add-btn" onclick="addDetailToCart()">点菜</button>
+        </div>
+    </div>
+</div>
+
 <script>
     // 全局变量
     let currentCategoryId = -1;
@@ -1108,9 +1123,15 @@
             
             const div = document.createElement('div');
             div.className = 'goods-item';
+            
+            // 点击卡片显示详情，但不包括按钮
             div.onclick = function(e) {
                 // 如果点击的是按钮，不触发详情
-                if (e.target.tagName === 'BUTTON') {
+                if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+                    return;
+                }
+                // 如果已售罄，不显示详情
+                if (isSoldOut) {
                     return;
                 }
                 showGoodsDetail(goods);
@@ -1153,10 +1174,13 @@
             delete cart[goodsId];
             updateButtonStyle(goodsId, false);
         } else {
-            // 不在购物车，显示详情弹窗
-            const goods = { goodsId, goodsName, price, imgUrl, storeCount };
-            showGoodsDetail(goods);
-            return;
+            // 不在购物车，直接加入，默认数量1，辣度“微辣”
+            cart[goodsId] = {
+                goods: { goodsId, goodsName, price, imgUrl, storeCount },
+                count: 1,
+                spicy: '微辣'
+            };
+            updateButtonStyle(goodsId, true);
         }
         updateCart();
     }
@@ -1244,6 +1268,9 @@
         updateCart();
         hideGoodsDetail();
     }
+
+    // 更新按钮样式
+    function updateButtonStyle(goodsId, isAdded) {
         const btn = document.getElementById('btn-' + goodsId);
         if (btn) {
             if (isAdded) {

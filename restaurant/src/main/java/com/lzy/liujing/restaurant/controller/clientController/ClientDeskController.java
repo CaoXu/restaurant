@@ -32,6 +32,16 @@ public class ClientDeskController{
         return ResultUtil.success();
     }
 
+    /**
+     * 设置桌位（允许进入就餐中的桌位）
+     */
+    @PostMapping("/setDesk.do")
+    @ResponseBody
+    private Result setDesk(String deskCode, HttpSession session){
+        session.setAttribute("deskCode", deskCode);
+        return ResultUtil.success();
+    }
+
     @GetMapping("/logout.do/{deskCode}")
     private String deskLoginOut(@PathVariable("deskCode") String deskCode,HttpSession session){
         Desk desk = new Desk();
